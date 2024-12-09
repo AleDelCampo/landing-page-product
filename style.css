@@ -571,3 +571,19 @@ h4 {
     width: 20px;
     height: 20px;
 }
+
+.custom-section {
+    padding: 50px 0;
+}
+
+.image-container {
+    margin: 0 auto;
+    overflow-x: hidden;
+}
+
+.swiper-slide {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}

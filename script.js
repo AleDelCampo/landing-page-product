@@ -99,22 +99,117 @@ window.addEventListener('scroll', function () {
 });
 
 // Inizializzo EmailJS con la mia Public Key
-(function() {
+(function () {
     emailjs.init("rL0LsG1kN3CcwjKsX"); // Sostituisco con la mia Public Key
 })();
 // Funzione per gestire l'invio del form
-document.getElementById('newsletterForm').addEventListener('submit', function(event) {
+document.getElementById('newsletterForm').addEventListener('submit', function (event) {
     event.preventDefault();
 
     const email = document.getElementById('email').value;
 
     // Invio l'email tramite EmailJS
     emailjs.sendForm("service_03o9iwt", "template_ioo4eub", this)
-        .then(function(response) {
+        .then(function (response) {
             alert("Email inviata con successo!");
             // Pulisci il campo dell'input
             document.getElementById('email').value = '';
-        }, function(error) {
+        }, function (error) {
             alert("Errore nell'invio dell'email: " + error.text);
         });
+});
+
+
+// Aspetto che la pagina sia completamente caricata
+document.addEventListener('DOMContentLoaded', () => {
+    // Inizializzo Swiper
+    const swiper = new Swiper('.swiper', {
+        // Configurazioni di base
+        loop: true, // Lo slider scorre in loop infinito
+        navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+        },
+        pagination: {
+            el: '.swiper-pagination',
+            clickable: true, // Puntini cliccabili
+        },
+        autoplay: {
+            delay: 3000, // Cambia slide ogni 3 secondi
+            disableOnInteraction: false, // Continua anche se interagisci con lo slider
+        },
+        slidesPerView: 1, // Numero di slide visibili
+        spaceBetween: 10,
+    });
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    let swiperInstance = null;
+
+    function toggleSwiper() {
+        const isMobile = window.matchMedia('(max-width: 768px)').matches;
+        const imageContainer = document.querySelector('.image-container');
+
+        if (isMobile && !swiperInstance) {
+            // Aggiungo la classe Swiper
+            imageContainer.classList.add('swiper', 'swiper-container');
+            imageContainer.classList.remove('row', 'justify-content-between');
+            
+            // Trasformo ogni colonna in uno slide
+            const slides = document.querySelectorAll('.image-container > .col-md-4');
+            slides.forEach(slide => {
+                slide.classList.add('swiper-slide');
+            });
+
+            // Wrapper per gli slide
+            const wrapper = document.createElement('div');
+            wrapper.classList.add('swiper-wrapper');
+            while (imageContainer.firstChild) {
+                wrapper.appendChild(imageContainer.firstChild);
+            }
+            imageContainer.appendChild(wrapper);
+
+            // Inizializzo Swiper
+            swiperInstance = new Swiper('.swiper-container', {
+                loop: true,
+                pagination: {
+                    el: '.swiper-pagination',
+                    clickable: true,
+                },
+                slidesPerView: 1,
+                spaceBetween: 20,
+            });
+
+            // Aggiungo la paginazione
+            const pagination = document.createElement('div');
+            pagination.classList.add('swiper-pagination');
+            imageContainer.appendChild(pagination);
+
+        } else if (!isMobile && swiperInstance) {
+            // Distruggo Swiper
+            swiperInstance.destroy(true, true);
+            swiperInstance = null;
+
+            // Rimuovo le classi Swiper
+            imageContainer.classList.remove('swiper', 'swiper-container');
+            imageContainer.classList.add('row', 'justify-content-between');
+
+            // Ripristino la struttura originale
+            const wrapper = document.querySelector('.swiper-wrapper');
+            const slides = document.querySelectorAll('.swiper-slide');
+            slides.forEach(slide => {
+                slide.classList.remove('swiper-slide');
+                imageContainer.appendChild(slide);
+            });
+            if (wrapper) wrapper.remove();
+
+            // Rimuovo la paginazione
+            const pagination = document.querySelector('.swiper-pagination');
+            if (pagination) pagination.remove();
+        }
+    }
+
+    // Controllo al caricamento della pagina e al resize
+    toggleSwiper();
+    window.addEventListener('resize', toggleSwiper);
 });
